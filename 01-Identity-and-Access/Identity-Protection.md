@@ -1,28 +1,63 @@
-Azure AD Identity Protection helps detect risky sign-ins and compromised identities using signals from Microsoft’s security graph. It enables you to configure risk-based Conditional Access policies and automated response.
+# Azure AD Identity Protection Configuration
 
-#------------------------------------------
-# Conditional Access policies
-#------------------------------------------
+## Overview
 
-Sign-in Risk Policy (https://learn.microsoft.com/en-us/entra/id-protection/howto-identity-protection-configure-risk-policies#sign-in-risk-policy-in-conditional-access)
-Policy Name: Require multifactor authentication for risky sign-ins
-Target Users: All users
-Risk Level: High
-Action: Block access
+Azure AD Identity Protection is a security feature that uses machine learning to detect potential vulnerabilities and risky behaviors related to user identities. As part of this Zero Trust architecture, Identity Protection is used to detect risky sign-ins, compromised accounts, and enforce remediation actions via Conditional Access policies.
 
-User Risk Policy (https://learn.microsoft.com/en-us/entra/id-protection/howto-identity-protection-configure-risk-policies#user-risk-policy-in-conditional-access)
-Policy Name: Require password change for high-risk users
-Target Users: Admins and Users
-Risk Level: Medium and above
-Action: Require Password Change and MFA
+---
 
-#------------------------------------------
-# Risk Detection
-#------------------------------------------
+## Configured Risk Policies
 
-Types (https://learn.microsoft.com/en-us/entra/id-protection/concept-identity-protection-risks#risk-detections-mapped-to-riskeventtype)
-Atypical travel
-Anonymous IP addresses (e.g., TOR)
-Malware-linked IP addresses
-Password spray attacks
-Impossible travel
+### Sign-in Risk Policy
+- **Policy Name**: Require multifactor authentication for risky sign-ins
+- **Target Users**: All users (excluding break-glass account)
+- **Risk Level**: High
+- **Access Control**: Block access
+- **Status**: Enabled
+
+### User Risk Policy
+- **Policy Name**: Require password change for high-risk users
+- **Target Users**: All users (excluding break-glass account)
+- **Risk Level**: Medium and High
+- **Access Control**: Require password change
+- **Status**: Enabled
+
+### Excluded Accounts
+- `BreakGlass@Pasmithbmgmail.onmicrosoft.com` (excluded from all risk policies)
+
+---
+
+## Risk Detection Types Monitored
+
+The following risk events are used by Azure AD Identity Protection to calculate sign-in and user risk:
+- Atypical travel
+- Anonymous IP address usage (e.g., TOR)
+- Unfamiliar sign-in properties
+- Malware-linked IP addresses
+- Impossible travel
+- Password spray attempts
+- Azure AD threat intelligence signals
+
+---
+
+## Testing and Validation
+
+- Used **TOR browser** and foreign VPN to simulate high-risk sign-in
+- Risk detection appeared in **Entra Admin Center > Identity Protection > Risky sign-ins**
+- Verified automatic block and remediation using configured policies
+- Logged outcome and confirmed Conditional Access enforcement triggered correctly
+
+---
+
+## Recommendations
+
+- Start with policies in **report-only mode** to measure impact
+- Review **Risky Users** and **Risk Detections** weekly
+- Combine Identity Protection with **MFA**, **PIM**, and **Conditional Access**
+- Set up **alerts** or integrate with **Microsoft Sentinel**
+
+---
+
+## References
+- [Identity Protection Overview](https://learn.microsoft.com/en-us/azure/active-directory/identity-protection/overview-identity-protection)
+- [Risk-based access policies](https://learn.microsoft.com/en-us/entra/id-protection/concept-identity-protection-policies)
